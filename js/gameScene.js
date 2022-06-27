@@ -83,9 +83,7 @@ class GameScene extends Phaser.Scene {
           )
           .setOrigin(0.5)
         this.GameOverText.setInteractive({ useHandCursor: true })
-        this.GameOverText.on("pointerdown", () =>
-          this.scene.start("gameScene")
-        )
+        this.GameOverText.on("pointerdown", () => this.scene.start("gameScene"))
       }.bind(this)
     )
   }
@@ -130,7 +128,7 @@ class GameScene extends Phaser.Scene {
       this.timer = this.timer -= 1000
       var snakePosition = Math.floor(Math.random() * 2) + 1
       if (this.timeActive == true) {
-         if (snakePosition == 1) {
+        if (snakePosition == 1) {
           this.createSnake()
         }
         if (snakePosition == 2) {
