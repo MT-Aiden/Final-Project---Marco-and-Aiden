@@ -31,14 +31,8 @@ class GameScene extends Phaser.Scene {
     super({ key: "gameScene" })
 
     this.background = null
-    this.score = 0
     this.timer = 0
-    this.scoreText = null
-    this.scoreTextStyle = {
-      font: "65px Arial",
-      fill: "#ffffff",
-      align: "center",
-    }
+    this.timeActive = true
     this.gameOverTextStyle = {
       font: "65px Arial",
       fill: "#ff0000",
@@ -58,25 +52,19 @@ class GameScene extends Phaser.Scene {
     this.load.image("frog", "assets/Frog.png")
     this.load.image("snake", "assets/snake.png")
     this.load.image("snake2", "assets/snake2.png")
+    this.load.image("fly", "assets/fly.png")
   }
 
   create(data) {
     this.background = this.add.image(0, 0, "startBackground").setScale(2.7)
     this.background.setOrigin(0, 0)
 
-    this.scoreText = this.add.text(
-      10,
-      10,
-      "Score: " + this.score.toString(),
-      this.scoreTextStyle
-    )
-
     this.frog = this.physics.add.sprite(1920 / 2, 1080 - 100, "frog")
 
     // create a group of the snakes
     this.snakeGroup = this.add.group()
-    this.createSnake(10)
-    this.createSnake2(10)
+    this.createSnake()
+    this.createSnake2()
 
     // Collisions between frog and snakes
     this.physics.add.collider(
@@ -95,7 +83,9 @@ class GameScene extends Phaser.Scene {
           )
           .setOrigin(0.5)
         this.GameOverText.setInteractive({ useHandCursor: true })
-        this.GameOverText.on("pointerdown", () => this.scene.start("GameScene"))
+        this.GameOverText.on("pointerdown", () =>
+          this.scene.start("gameScene")
+        )
       }.bind(this)
     )
   }
@@ -104,6 +94,7 @@ class GameScene extends Phaser.Scene {
     this.timer += delta
     //called 60 times a second, hopefully!
 
+    //Movement
     const keyLeftObj = this.input.keyboard.addKey("LEFT")
     const keyRightObj = this.input.keyboard.addKey("RIGHT")
     const keyUpObj = this.input.keyboard.addKey("UP")
@@ -135,17 +126,19 @@ class GameScene extends Phaser.Scene {
         this.frog.y = 1920
       }
     }
-    while (this.timer > 1000) {
-      this.createSnake()
-      this.createSnake2()
+    if (this.timer > 1000) {
       this.timer = this.timer -= 1000
-    }
-    while (this.timer > 1000) {
-      this.createSnake()
-      this.createSnake2()
-      this.timer = this.timer -= 1000
+      var snakePosition = Math.floor(Math.random() * 2) + 1
+      if (this.timeActive == true) {
+         if (snakePosition == 1) {
+          this.createSnake()
+        }
+        if (snakePosition == 2) {
+          this.createSnake2()
+          this.timer = this.timer -= 1000
+        }
+      }
     }
   }
 }
-
 export default GameScene
